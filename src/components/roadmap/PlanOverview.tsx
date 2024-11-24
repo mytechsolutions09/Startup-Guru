@@ -15,65 +15,77 @@ interface PlanOverviewProps {
 
 function PlanOverview({ idea, overview, problemStatement, targetMarket, valueProposition }: PlanOverviewProps) {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-8">
-      <div className="flex items-center space-x-3 mb-6">
-        <Rocket className="h-8 w-8 text-indigo-600" />
-        <h2 className="text-2xl font-bold text-gray-900">Startup Plan</h2>
-      </div>
-
-      <h3 className="text-xl font-semibold text-indigo-600 mb-4">{idea}</h3>
-      <p className="text-gray-600 mb-6">{overview}</p>
-
-      <div className="grid gap-6 mb-8">
-        <div className="bg-gray-50 rounded-lg p-6">
-          <h4 className="font-semibold text-gray-900 mb-2">Problem Statement</h4>
-          <p className="text-gray-600">{problemStatement}</p>
-        </div>
-
-        <div className="bg-gray-50 rounded-lg p-6">
-          <h4 className="font-semibold text-gray-900 mb-2">Value Proposition</h4>
-          <p className="text-gray-600">{valueProposition}</p>
-        </div>
-
-        <div className="bg-gray-50 rounded-lg p-6">
-          <h4 className="font-semibold text-gray-900 mb-4">Target Market</h4>
-          <div className="grid md:grid-cols-3 gap-4">
-            <div>
-              <h5 className="text-sm font-medium text-gray-700 mb-2">Demographics</h5>
-              <ul className="list-disc list-inside text-gray-600 space-y-1">
-                {targetMarket.demographics.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h5 className="text-sm font-medium text-gray-700 mb-2">Psychographics</h5>
-              <ul className="list-disc list-inside text-gray-600 space-y-1">
-                {targetMarket.psychographics.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h5 className="text-sm font-medium text-gray-700 mb-2">Market Size</h5>
-              <p className="text-gray-600">{targetMarket.marketSize}</p>
-            </div>
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 hover:border-indigo-100 transition-all duration-300">
+      <div className="p-8">
+        {/* Header */}
+        <div className="flex items-center space-x-3 mb-8">
+          <Rocket className="h-10 w-10 text-indigo-600 bg-indigo-50 p-2 rounded-xl" />
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">{idea}</h2>
+            <p className="text-gray-500 mt-1">{overview}</p>
           </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="flex items-center space-x-3 p-4 bg-indigo-50 rounded-lg">
-          <Target className="h-5 w-5 text-indigo-600" />
-          <span className="text-gray-700 font-medium">Clear Objectives</span>
+        {/* Info Cards Grid */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-gradient-to-br from-indigo-50 to-white p-6 rounded-xl border border-indigo-100">
+            <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+              <Target className="h-5 w-5 text-indigo-600 mr-2" />
+              Problem Statement
+            </h4>
+            <p className="text-gray-600">{problemStatement}</p>
+          </div>
+
+          <div className="bg-gradient-to-br from-indigo-50 to-white p-6 rounded-xl border border-indigo-100">
+            <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+              <TrendingUp className="h-5 w-5 text-indigo-600 mr-2" />
+              Value Proposition
+            </h4>
+            <p className="text-gray-600">{valueProposition}</p>
+          </div>
         </div>
-        <div className="flex items-center space-x-3 p-4 bg-indigo-50 rounded-lg">
-          <Users className="h-5 w-5 text-indigo-600" />
-          <span className="text-gray-700 font-medium">Target Audience</span>
-        </div>
-        <div className="flex items-center space-x-3 p-4 bg-indigo-50 rounded-lg">
-          <BarChart className="h-5 w-5 text-indigo-600" />
-          <span className="text-gray-700 font-medium">Growth Metrics</span>
+
+        {/* Target Market Section */}
+        <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl border border-gray-100 p-6">
+          <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
+            <Users className="h-5 w-5 text-indigo-600 mr-2" />
+            Target Market Analysis
+          </h4>
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* Demographics */}
+            <div className="space-y-2">
+              <h5 className="text-sm font-medium text-indigo-600">Demographics</h5>
+              <ul className="space-y-1">
+                {targetMarket.demographics.map((item, index) => (
+                  <li key={index} className="text-gray-600 flex items-center">
+                    <div className="h-1.5 w-1.5 rounded-full bg-indigo-400 mr-2" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Psychographics */}
+            <div className="space-y-2">
+              <h5 className="text-sm font-medium text-indigo-600">Psychographics</h5>
+              <ul className="space-y-1">
+                {targetMarket.psychographics.map((item, index) => (
+                  <li key={index} className="text-gray-600 flex items-center">
+                    <div className="h-1.5 w-1.5 rounded-full bg-indigo-400 mr-2" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Market Size */}
+            <div className="space-y-2">
+              <h5 className="text-sm font-medium text-indigo-600">Market Size</h5>
+              <div className="bg-indigo-50 text-indigo-700 px-3 py-2 rounded-lg font-medium">
+                {targetMarket.marketSize}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

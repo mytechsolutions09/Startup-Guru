@@ -4,74 +4,66 @@ import IdeaGenerator from './components/IdeaGenerator';
 import IdeaList from './components/IdeaList';
 import RoadmapView from './components/RoadmapView';
 import { generateIdeasWithAI } from './utils/api';
+import { SavedPlansProvider } from './contexts/SavedPlansContext';
+import Navbar from './components/Navbar';
+import { StartupPlan } from './types';
 
 function App() {
   const [vagueConcept, setVagueConcept] = useState('');
-  const [generatedIdeas, setGeneratedIdeas] = useState<string[]>([]);
+  const [ideas, setIdeas] = useState<string[]>([]);
   const [selectedIdea, setSelectedIdea] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [currentPlan, setCurrentPlan] = useState<StartupPlan | null>(null);
 
-  const generateIdeas = async (concept: string) => {
+  const handleGenerateIdeas = async (concept: string) => {
     setIsLoading(true);
-    setError(null);
     try {
-      const ideas = await generateIdeasWithAI(concept);
-      if (ideas && Array.isArray(ideas)) {
-        setGeneratedIdeas(ideas);
-      } else {
-        throw new Error('Invalid response format');
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      setGeneratedIdeas([]);
+      const generatedIdeas = await generateIdeasWithAI(concept);
+      setIdeas(generatedIdeas);
+    } catch (error) {
+      console.error('Failed to generate ideas:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleSelectSavedPlan = (plan: StartupPlan) => {
+    setCurrentPlan(plan);
+    setSelectedIdea(plan.idea);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center space-x-2">
-            <Rocket className="h-8 w-8 text-indigo-600" />
-            <span className="text-2xl font-bold text-gray-900">StartupGuru</span>
-          </div>
-        </div>
-      </nav>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {error && (
-          <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-            {error}
-          </div>
-        )}
-
-        {!selectedIdea ? (
-          <>
-            <IdeaGenerator 
-              vagueConcept={vagueConcept}
-              setVagueConcept={setVagueConcept}
-              onGenerate={generateIdeas}
-              isLoading={isLoading}
+    <SavedPlansProvider>
+      <div className="min-h-screen bg-gray-50">
+        <Navbar onSelectPlan={handleSelectSavedPlan} />
+        <main className="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+          {selectedIdea ? (
+            <RoadmapView 
+              idea={selectedIdea} 
+              onBack={() => {
+                setSelectedIdea(null);
+                setCurrentPlan(null);
+              }} 
             />
-            
-            {generatedIdeas.length > 0 && (
-              <IdeaList 
-                ideas={generatedIdeas}
-                onSelectIdea={setSelectedIdea}
+          ) : (
+            <>
+              <IdeaGenerator
+                vagueConcept={vagueConcept}
+                setVagueConcept={setVagueConcept}
+                onGenerate={handleGenerateIdeas}
+                isLoading={isLoading}
               />
-            )}
-          </>
-        ) : (
-          <RoadmapView 
-            idea={selectedIdea}
-            onBack={() => setSelectedIdea(null)}
-          />
-        )}
-      </main>
-    </div>
+              {ideas.length > 0 && (
+                <IdeaList
+                  ideas={ideas}
+                  onSelectIdea={setSelectedIdea}
+                />
+              )}
+            </>
+          )}
+        </main>
+      </div>
+    </SavedPlansProvider>
   );
 }
 
